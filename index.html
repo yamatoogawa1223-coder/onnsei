@@ -79,6 +79,7 @@ p,li{font-size:16px;line-height:1.7}
 ol.rank{margin:0;padding-left:1.6em}
 ol.rank li{font-size:17px}
 ul{padding-left:1.3em;margin:4px 0}
+textarea{display:block;width:100%;margin:6px 0 8px;padding:8px;border-radius:10px;border:2px solid #4a3b8f;background:#120a2a;color:#fff;font-size:14px;word-break:break-all;resize:none}
 
 /* 横画面・PCなどの横長ウィンドウでは左右2列にする */
 @media (min-aspect-ratio:1/1){
@@ -117,11 +118,12 @@ ul{padding-left:1.3em;margin:4px 0}
       <button class="btn mode" data-mode="attack"><span class="ico">🎯</span><span>スコアアタック<small>自分の最高スコアを更新しよう</small></span></button>
       <button class="btn mode" data-mode="tour"><span class="ico">🏆</span><span>大会モード<small>予選・準決勝・決勝を勝ち抜け</small></span></button>
       <button class="btn mode" data-mode="duo"><span class="ico">👥</span><span>2人対戦<small>同じ端末で順番にチャレンジ</small></span></button>
+      <button class="btn mode" data-mode="online"><span class="ico">🌐</span><span>オンライン対戦<small>友だちとつないで同時に勝負</small></span></button>
       <div class="row">
         <button class="btn sub" data-go="records">🏅 きろく</button>
         <button class="btn sub" data-go="about">❓ あそびかた</button>
       </div>
-      <p class="note">※ 測定するのは「マイクに届いた音の強さ」です。録音・保存・送信は一切しません。オンラインランキングはありません。</p>
+      <p class="note">※ 測定するのは「マイクに届いた音の強さ」です。音声の録音・保存・送信はしません。友だち対戦では点数と音量の数値だけを相手に送ります（サーバーなしの直接通信）。全員が見られるオンラインランキングはありません。</p>
     </section>
 
     <!-- CPU選択 -->
@@ -159,6 +161,43 @@ ul{padding-left:1.3em;margin:4px 0}
       <div id="resBtns"></div>
     </section>
 
+    <!-- オンライン接続 -->
+    <section id="s-online" class="screen">
+      <h2>🌐 オンライン対戦</h2>
+      <div id="o-choice">
+        <p class="lead">友だちと同時にカウントダウンして、点数をくらべます。サーバーは使わず、2台を直接つなぎます。</p>
+        <button class="btn main" data-act="ohost">🏠 部屋をつくる（招待コードを送る）</button>
+        <button class="btn" data-act="ojoinview">🚪 友だちの部屋に入る</button>
+        <button class="btn sub" data-go="menu">← もどる</button>
+      </div>
+      <div id="o-host" hidden>
+        <div class="card"><b>① 招待を友だちに送る</b>
+          <p class="note" style="margin:4px 0 6px">リンクをLINEなどで送ってください。コードだけ送ってもOKです。</p>
+          <textarea id="hostLink" rows="3" readonly></textarea>
+          <div class="row"><button class="btn sub" data-act="oshare">📤 リンクを送る</button><button class="btn sub" data-act="ocopyhost">📋 コピー</button></div>
+        </div>
+        <div class="card"><b>② 友だちから届く「返信コード」をはる</b>
+          <textarea id="hostAnswer" rows="3" placeholder="ここに返信コードをはりつけ"></textarea>
+          <button class="btn main" data-act="oconnect">🔗 つなぐ</button>
+        </div>
+        <button class="btn sub" data-act="oreset">← やめる</button>
+      </div>
+      <div id="o-guest" hidden>
+        <div class="card"><b>① 友だちの招待コードをはる</b>
+          <textarea id="guestOffer" rows="3" placeholder="ここに招待コードをはりつけ"></textarea>
+          <button class="btn main" data-act="ojoin">🚪 入る</button>
+        </div>
+        <div class="card" id="o-guest2" hidden><b>② この返信コードを友だちに送る</b>
+          <p class="note" style="margin:4px 0 6px">送ると、友だちの画面でつながります。</p>
+          <textarea id="guestAnswer" rows="3" readonly></textarea>
+          <div class="row"><button class="btn sub" data-act="oshareans">📤 送る</button><button class="btn sub" data-act="ocopyguest">📋 コピー</button></div>
+        </div>
+        <button class="btn sub" data-act="oreset">← やめる</button>
+      </div>
+      <div class="tip" id="oStatus" hidden></div>
+      <p class="note">※ 接続のため Google の公開STUNサーバーを使い、友だちにIPアドレスが伝わります。信頼できる相手とだけ遊んでください。点数は各自の端末で計算して送るため、自己申告です。</p>
+    </section>
+
     <!-- エラー -->
     <section id="s-error" class="screen">
       <h2>🎤 マイクを使えません</h2>
@@ -191,6 +230,7 @@ ul{padding-left:1.3em;margin:4px 0}
         <li><b>スコアアタック</b>：自分の最高スコアを更新しよう。</li>
         <li><b>大会モード</b>：予選→準決勝→決勝と3連勝で優勝。負けたら最初から。引き分けは再戦です。</li>
         <li><b>2人対戦</b>：1人目の結果を保存してから2人目が挑戦。スコアが高い方の勝ち。</li>
+        <li><b>オンライン対戦</b>：離れた友だちと同時に勝負。部屋をつくって招待リンクを送り、返信コードをもらってつなぎます。お互いに「スタート」を押すと同時にカウントダウンが始まります。勝つと +20pt。</li>
       </ul>
       <h3>📏 スコアの決め方</h3>
       <div class="card">
@@ -207,7 +247,8 @@ ul{padding-left:1.3em;margin:4px 0}
         <li>マイクは測定中だけ使い、終わると停止します（使用中は画面に表示）。</li>
         <li>音声の録音・保存・送信はしません。音量の数値をその場で計算するだけです。</li>
         <li>記録はこの端末・このブラウザの localStorage にだけ保存されます。</li>
-        <li>オンラインランキングはありません。</li>
+        <li>全員が見られるオンラインランキングはありません。</li>
+        <li>友だち対戦（オンライン対戦）では、点数と音量の数値だけを相手に直接送ります。音声は送りません。サーバーには何も送らず、接続の際に Google の公開STUNサーバーを使います。</li>
       </ul>
       <button class="btn sub" data-go="menu">← メニューへ</button>
     </section>
@@ -231,7 +272,9 @@ ul{padding-left:1.3em;margin:4px 0}
     { id: 'king',  name: 'キングボイス', stars: 3, mean: 700, sd: 90, color: '#b58cff', acc: 'crown',  pts: 30, trophy: '🥇', desc: 'ボイス界の王様。かなり強い' }
   ];
   var STAGES = ['予選', '準決勝', '決勝'];
-  var MODE_LABEL = { cpu: 'CPU対戦', attack: 'スコアアタック', tour: '大会モード', duo: '2人対戦' };
+  var MODE_LABEL = { cpu: 'CPU対戦', attack: 'スコアアタック', tour: '大会モード', duo: '2人対戦', online: 'オンライン' };
+  var FRIEND = { id: 'friend', name: '友だち', pts: 20 };
+  var ICE = [{ urls: 'stun:stun.l.google.com:19302' }];
   var PLAYER = { label: 'あなた', col: '#ffd166', acc: 'band' };
 
   /* ================= 保存 ================= */
@@ -263,7 +306,7 @@ ul{padding-left:1.3em;margin:4px 0}
   var G = {
     phase: 'idle',      // idle / countdown / measure
     view: 'play',       // play / result
-    t0: 0, disp: 0, gate: -50, noiseDb: -70, noise: [],
+    t0: 0, disp: 0, oppRaw: 0, oppDisp: 0, gate: -50, noiseDb: -70, noise: [],
     sum: 0, dur: 0, peak: 0, ring: [], hist: [], count: 3, timeLeft: MEASURE_SEC, flash: 0,
     scene: null, moods: { left: 'normal', right: 'normal' }, scores: { left: null, right: null },
     banner: null, sub: '', hint: '', confetti: [], trophy: false, trophyColor: '#ffd23f'
@@ -285,7 +328,9 @@ ul{padding-left:1.3em;margin:4px 0}
     G.hint = hint || '';
   }
   function buildScene() {
-    if (S.mode === 'cpu' || S.mode === 'tour') {
+    if (S.mode === 'online') {
+      G.scene = { left: PLAYER, right: { label: '友だち', col: '#6ec6ff', acc: 'band2' }, active: 'left' };
+    } else if (S.mode === 'cpu' || S.mode === 'tour') {
       G.scene = { left: PLAYER, right: { label: S.cpu.name, col: S.cpu.color, acc: S.cpu.acc }, active: 'left' };
     } else if (S.mode === 'duo' && S.duo.step === 2) {
       G.scene = { left: { label: '1人目', col: '#ffd166', acc: 'band' }, right: { label: '2人目', col: '#6ec6ff', acc: 'band2' }, active: 'right' };
@@ -303,6 +348,7 @@ ul{padding-left:1.3em;margin:4px 0}
   }
 
   function renderMenu() {
+    if (O.pc) closeOnline();
     $('m-best').textContent = save.best;
     $('m-wins').textContent = save.wins;
     $('m-streak').textContent = save.streak;
@@ -330,6 +376,8 @@ ul{padding-left:1.3em;margin:4px 0}
       title = 'スコアアタック'; desc = '自己ベスト：' + save.best + '点。更新できるかな？';
     } else if (S.mode === 'tour') {
       title = '大会モード【' + STAGES[S.stage] + '】'; desc = '対戦相手：' + S.cpu.name + '　強さ ' + stars(S.cpu.stars) + '　（' + (S.stage + 1) + '/3 試合目）';
+    } else if (S.mode === 'online') {
+      title = 'オンライン対戦'; desc = '友だちとつながっています。お互いに「スタート」を押すと、同時にカウントダウンが始まります。';
     } else {
       title = S.duo.step === 1 ? '2人対戦【1人目の番】' : '2人対戦【2人目の番】';
       desc = S.duo.step === 1 ? '1人目の人がスマホを持ってね。結果は保存されます。' : '1人目の記録：' + S.duo.s1 + '点。2人目の人に交代してね！';
@@ -395,20 +443,31 @@ ul{padding-left:1.3em;margin:4px 0}
   var busy = false;
   function startRound() {
     if (busy || G.phase !== 'idle') return;
+    if (S.mode === 'online' && !O.open) { onlineLost(); return; }
     busy = true;
     openMic().then(function () {
       busy = false;
-      G.phase = 'countdown'; G.t0 = performance.now(); G.noise = []; G.disp = 0;
-      G.sum = 0; G.dur = 0; G.peak = 0; G.ring = []; G.hist = []; G.count = COUNT_SEC; G.timeLeft = MEASURE_SEC;
-      G.gate = -50; G.flash = 0;
-      resetViewKeepScene();
-      $('micBadge').hidden = false;
-      $('playMsg').textContent = '周りの音を測っています。まだ声は出さずに待ってね…';
-      show('s-play');
+      if (S.mode === 'online') {
+        G.phase = 'wait'; G.disp = 0; G.gate = -50;
+        resetViewKeepScene();
+        $('micBadge').hidden = false;
+        $('playMsg').textContent = '友だちの準備を待っています…（マイクは使用中です）';
+        show('s-play');
+        S.meReady = true; send({ t: 'ready' }); maybeGo();
+      } else beginCountdown();
     }).catch(function (e) {
       busy = false;
       showMicError(e);
     });
+  }
+  function beginCountdown() {
+    G.phase = 'countdown'; G.t0 = performance.now(); G.noise = []; G.disp = 0;
+    G.sum = 0; G.dur = 0; G.peak = 0; G.ring = []; G.hist = []; G.count = COUNT_SEC; G.timeLeft = MEASURE_SEC;
+    G.gate = -50; G.flash = 0; S.opp = null; S.myM = null;
+    resetViewKeepScene();
+    $('micBadge').hidden = false;
+    $('playMsg').textContent = '周りの音を測っています。まだ声は出さずに待ってね…';
+    show('s-play');
   }
   function resetViewKeepScene() {
     var sc = G.scene; resetView(); G.scene = sc;
@@ -432,6 +491,7 @@ ul{padding-left:1.3em;margin:4px 0}
     show('s-error');
   }
   function cancelRound(notice) {
+    if (S.mode === 'online') { S.meReady = false; S.myM = null; G.hint = ''; send({ t: 'cancel' }); send({ t: 'lv', v: 0 }); }
     closeMic();
     G.phase = 'idle';
     setupReady(notice);
@@ -459,6 +519,13 @@ ul{padding-left:1.3em;margin:4px 0}
       silent: peak < 8,
       noisy: G.noiseDb > -45
     };
+    if (S.mode === 'online') {
+      S.myM = m;
+      send({ t: 'score', score: m.score }); send({ t: 'lv', v: 0 });
+      if (S.opp) finalizeOnline();
+      else { G.hint = '友だちの結果を待っています…'; $('playMsg').textContent = '友だちの結果を待っています…'; }
+      return;
+    }
     var r = resolve(m);
     S.last = r;
     persist();
@@ -494,6 +561,26 @@ ul{padding-left:1.3em;margin:4px 0}
     } else {
       r.outcome = 'lose'; save.losses++; save.streak = 0;
     }
+  }
+  function finalizeOnline() {
+    var m = S.myM, opp = S.opp;
+    S.myM = null; S.opp = null;
+    var r = m;
+    r.online = true; r.cpu = FRIEND; r.cpuScore = opp.score;
+    if (!m.silent) {
+      save.plays++;
+      var prev = save.best;
+      if (m.score > save.best) { save.best = m.score; r.newBest = true; r.prevBest = prev; }
+      addTop(m.score);
+    }
+    var diff = m.score - opp.score;
+    if (Math.abs(diff) < DRAW_MARGIN) { r.outcome = 'draw'; save.draws++; }
+    else if (diff > 0) {
+      r.outcome = 'win'; save.wins++; save.streak++;
+      if (save.streak > save.bestStreak) save.bestStreak = save.streak;
+      save.points += FRIEND.pts; r.gainPts = FRIEND.pts;
+    } else { r.outcome = 'lose'; save.losses++; save.streak = 0; }
+    S.last = r; persist(); showResult(r);
   }
   function resolve(m) {
     var r = m;
@@ -548,7 +635,7 @@ ul{padding-left:1.3em;margin:4px 0}
       if (o === 'win') {
         cls = 'win'; title = r.champion ? '👑 大会優勝！！' : '🎉 勝利！';
         G.banner = { t: r.champion ? '優勝！！' : '勝利！', c: '#ffd23f' }; G.sub = r.score + ' − ' + r.cpuScore;
-        G.moods.left = 'happy'; G.moods.right = 'sad'; G.trophy = true; G.trophyColor = r.champion ? '#ffd23f' : ({ poco: '#cd7f32', gonta: '#cfd8e3', king: '#ffd23f' }[r.cpu.id]);
+        G.moods.left = 'happy'; G.moods.right = 'sad'; G.trophy = true; G.trophyColor = r.champion ? '#ffd23f' : ({ poco: '#cd7f32', gonta: '#cfd8e3', king: '#ffd23f' }[r.cpu.id] || '#ffd23f');
         burst();
       } else if (o === 'lose') {
         cls = 'lose'; title = '😢 敗北…';
@@ -586,7 +673,8 @@ ul{padding-left:1.3em;margin:4px 0}
       h += '</div>' + calcHtml(r);
 
       if (r.newBest) chips.push('🎊 自己ベスト更新！（前回 ' + r.prevBest + '）');
-      if (r.gainPts) chips.push(r.gainTrophy + ' トロフィー獲得　+' + r.gainPts + 'pt');
+      if (r.gainPts) chips.push((r.gainTrophy ? r.gainTrophy + ' トロフィー獲得　' : '') + '+' + r.gainPts + 'pt');
+      if (r.online && r.silent) chips.push('あなたの声が聞こえませんでした（0点扱い）');
       if (r.bonus) chips.push('👑 優勝ボーナス +' + r.bonus + 'pt');
       if (r.champion) chips.push('優勝回数 ' + save.titles + '回');
       if (r.cpu && o === 'win') chips.push('🔥 ' + save.streak + '連勝中');
@@ -613,6 +701,8 @@ ul{padding-left:1.3em;margin:4px 0}
     function btn(cls, act, text) { return '<button class="btn ' + cls + '" data-act="' + act + '">' + text + '</button>'; }
     if (o === 'silent') {
       b += btn('main', 'again', '🔁 もう一度ちょうせん');
+    } else if (S.mode === 'online') {
+      b += btn('main', 'again', '🔁 もう一度（同じ友だちと）');
     } else if (S.mode === 'tour') {
       if (r.nextStage) b += btn('main', 'tournext', '▶ 次の試合へ（' + STAGES[S.stage + 1] + '）');
       else if (r.champion) b += btn('main', 'tourreset', '🔁 もう一度大会に出る');
@@ -627,7 +717,7 @@ ul{padding-left:1.3em;margin:4px 0}
     } else {
       b += btn('main', 'again', '🔁 もう一度ちょうせん');
     }
-    b += btn('sub', 'menu', '🏠 メニューへ');
+    b += btn('sub', 'menu', S.mode === 'online' ? '🏠 対戦をおわる' : '🏠 メニューへ');
     return b;
   }
 
@@ -663,6 +753,7 @@ ul{padding-left:1.3em;margin:4px 0}
   /* ================= 操作 ================= */
   function chooseMode(m) {
     S.mode = m;
+    if (m === 'online') { renderOnline(); return; }
     if (m === 'cpu') { renderCpuSelect(); return; }
     if (m === 'tour') { S.stage = 0; S.cpu = CPUS[0]; }
     if (m === 'duo') { S.duo = { step: 1, s1: null }; }
@@ -673,6 +764,15 @@ ul{padding-left:1.3em;margin:4px 0}
     switch (a) {
       case 'start': startRound(); break;
       case 'cancel': cancelRound(); break;
+      case 'ohost': onlineHost(); break;
+      case 'ojoinview': showOnline('o-guest'); break;
+      case 'ojoin': onlineJoin($('guestOffer').value); break;
+      case 'oconnect': onlineConnect(); break;
+      case 'oreset': closeOnline(); renderOnline(); break;
+      case 'oshare': shareText($('hostLink').value, '友だちとボイスキング！リンクを開いて返信コードを送ってね'); break;
+      case 'oshareans': shareText($('guestAnswer').value, 'ボイスキングの返信コード'); break;
+      case 'ocopyhost': copyText($('hostLink').value); break;
+      case 'ocopyguest': copyText($('guestAnswer').value); break;
       case 'back': if (S.mode === 'cpu') renderCpuSelect(); else renderMenu(); break;
       case 'again': setupReady(); break;
       case 'menu': renderMenu(); break;
@@ -701,23 +801,159 @@ ul{padding-left:1.3em;margin:4px 0}
     } else if (b.dataset.act) act(b.dataset.act);
   });
   document.addEventListener('visibilitychange', function () {
-    if (document.hidden && (G.phase === 'countdown' || G.phase === 'measure')) {
+    if (document.hidden && (G.phase === 'countdown' || G.phase === 'measure' || G.phase === 'wait')) {
       cancelRound('画面が切り替わったので測定を中止しました。もう一度スタートを押してね。');
     }
   });
   window.addEventListener('pagehide', closeMic);
 
+  /* ================= オンライン（WebRTC・サーバーなし） ================= */
+  var O = { pc: null, dc: null, host: false, open: false };
+  function send(o) { try { if (O.dc && O.dc.readyState === 'open') O.dc.send(JSON.stringify(o)); } catch (e) {} }
+  function enc(d) { return btoa(unescape(encodeURIComponent(JSON.stringify({ t: d.type, s: d.sdp })))); }
+  function dec(str) {
+    var o = JSON.parse(decodeURIComponent(escape(atob(String(str).trim().replace(/^.*#join=/, '')))));
+    return { type: o.t, sdp: o.s };
+  }
+  function oStatus(msg, bad) {
+    var n = $('oStatus'); n.hidden = !msg; n.textContent = msg || ''; n.className = 'tip' + (bad ? ' err' : '');
+  }
+  function showOnline(which) {
+    $('o-choice').hidden = which !== 'o-choice'; $('o-host').hidden = which !== 'o-host'; $('o-guest').hidden = which !== 'o-guest';
+    oStatus('');
+  }
+  function renderOnline() {
+    S.mode = 'online'; buildScene(); G.hint = 'オンライン対戦';
+    $('hostLink').value = ''; $('hostAnswer').value = ''; $('guestOffer').value = ''; $('guestAnswer').value = ''; $('o-guest2').hidden = true;
+    showOnline('o-choice'); show('s-online');
+  }
+  function closeOnline() {
+    var pc = O.pc, dc = O.dc;
+    O.pc = null; O.dc = null; O.open = false;
+    S.meReady = false; S.oppReady = false; S.opp = null; S.myM = null; G.oppRaw = 0;
+    try { if (dc) { dc.onclose = null; dc.onmessage = null; dc.close(); } } catch (e) {}
+    try { if (pc) { pc.onconnectionstatechange = null; pc.close(); } } catch (e) {}
+  }
+  function makePc() {
+    closeOnline();
+    if (!window.RTCPeerConnection) throw new Error('nosupport');
+    var pc = new RTCPeerConnection({ iceServers: ICE });
+    pc.onconnectionstatechange = function () {
+      if (O.pc !== pc) return;
+      if (pc.connectionState === 'failed') {
+        if (O.open) onlineLost(); else oStatus('つながりませんでした。回線や通信会社の制限で直接つなげない場合があります。Wi-Fiを変えるか、やり直してください。', true);
+      } else if (pc.connectionState === 'disconnected' || pc.connectionState === 'closed') { if (O.open) onlineLost(); }
+    };
+    O.pc = pc; return pc;
+  }
+  function wire(dc) {
+    O.dc = dc;
+    dc.onopen = function () {
+      O.open = true; S.mode = 'online'; S.meReady = false; S.oppReady = false;
+      setupReady('友だちとつながりました！');
+    };
+    dc.onclose = function () { if (O.dc === dc && O.open) onlineLost(); };
+    dc.onmessage = onMsg;
+  }
+  function iceDone(pc) {
+    return new Promise(function (res) {
+      if (pc.iceGatheringState === 'complete') return res();
+      var to = setTimeout(done, 6000);
+      function done() { clearTimeout(to); pc.removeEventListener('icegatheringstatechange', chk); res(); }
+      function chk() { if (pc.iceGatheringState === 'complete') done(); }
+      pc.addEventListener('icegatheringstatechange', chk);
+    });
+  }
+  function onlineHost() {
+    var pc;
+    try { pc = makePc(); } catch (e) { oStatus('このブラウザはオンライン対戦に対応していません。', true); return; }
+    O.host = true; wire(pc.createDataChannel('vk'));
+    showOnline('o-host'); oStatus('招待リンクを作っています…');
+    pc.createOffer().then(function (o) { return pc.setLocalDescription(o); }).then(function () { return iceDone(pc); }).then(function () {
+      if (O.pc !== pc) return;
+      var code = enc(pc.localDescription);
+      $('hostLink').value = location.href.split('#')[0] + '#join=' + code;
+      oStatus('できました！リンクを友だちに送り、返信コードが届いたら②にはってください。');
+    }).catch(function () { oStatus('招待の作成に失敗しました。やり直してください。', true); });
+  }
+  function onlineConnect() {
+    var pc = O.pc;
+    if (!pc) return;
+    try {
+      pc.setRemoteDescription(dec($('hostAnswer').value)).then(function () { oStatus('接続中…'); })
+        .catch(function () { oStatus('返信コードが正しくありません。', true); });
+    } catch (e) { oStatus('返信コードが正しくありません。コード全体をはってください。', true); }
+  }
+  function onlineJoin(code) {
+    var pc, offer;
+    try { offer = dec(code); } catch (e) { oStatus('招待コードが正しくありません。コード全体をはってください。', true); return; }
+    try { pc = makePc(); } catch (e) { oStatus('このブラウザはオンライン対戦に対応していません。', true); return; }
+    O.host = false; pc.ondatachannel = function (ev) { wire(ev.channel); };
+    oStatus('返信コードを作っています…');
+    pc.setRemoteDescription(offer).then(function () { return pc.createAnswer(); }).then(function (a) { return pc.setLocalDescription(a); })
+      .then(function () { return iceDone(pc); }).then(function () {
+        if (O.pc !== pc) return;
+        $('guestAnswer').value = enc(pc.localDescription); $('o-guest2').hidden = false;
+        oStatus('返信コードができました。友だちに送ってください。つながるまでこの画面で待ちます。');
+      }).catch(function () { oStatus('入室に失敗しました。招待コードを確認してください。', true); });
+  }
+  function onlineLost() {
+    closeOnline();
+    if (G.phase !== 'idle') { closeMic(); G.phase = 'idle'; }
+    S.mode = 'online'; renderOnline();
+    oStatus('友だちとの接続が切れました。もう一度つなぎ直してください。', true);
+  }
+  function maybeGo() {
+    if (O.host && S.meReady && S.oppReady && G.phase === 'wait') {
+      S.meReady = false; S.oppReady = false;
+      send({ t: 'go' }); beginCountdown();
+    }
+  }
+  function onMsg(ev) {
+    var m; try { m = JSON.parse(ev.data); } catch (e) { return; }
+    if (!m || typeof m !== 'object') return;
+    if (m.t === 'ready') { S.oppReady = true; maybeGo(); }
+    else if (m.t === 'go') { if (G.phase === 'wait') { S.meReady = false; S.oppReady = false; beginCountdown(); } }
+    else if (m.t === 'cancel') {
+      S.oppReady = false;
+      if (G.phase !== 'idle') cancelRound('友だちが中断しました。もう一度スタートしてね。');
+    } else if (m.t === 'score') {
+      var sc = Math.round(+m.score);
+      if (!isFinite(sc)) return;
+      S.opp = { score: Math.max(0, Math.min(1000, sc)) };
+      if (S.myM) finalizeOnline();
+    } else if (m.t === 'lv') { G.oppRaw = Math.max(0, Math.min(100, +m.v || 0)); }
+  }
+  function copyText(v) {
+    function fallback() {
+      var ta = document.createElement('textarea'); ta.value = v; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); oStatus('コピーしました。'); } catch (e) { oStatus('コピーできませんでした。枠を長押ししてコピーしてください。', true); }
+      document.body.removeChild(ta);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(v).then(function () { oStatus('コピーしました。'); }, fallback);
+    else fallback();
+  }
+  function shareText(v, msg) {
+    if (!v) return;
+    if (navigator.share) navigator.share({ title: 'ボイスキング', text: msg + '\n', url: /^http/.test(v) ? v : undefined }).catch(function () {});
+    else copyText(v);
+  }
+
   /* ================= 更新ループ ================= */
-  var cache = {};
+  var cache = {}, lastLv = 0;
   function setText(id, v) { if (cache[id] !== v) { cache[id] = v; $(id).textContent = v; } }
 
   function update(ts, dt) {
-    if (G.phase === 'countdown' || G.phase === 'measure') {
+    G.oppDisp += (G.oppRaw - G.oppDisp) * Math.min(1, dt * 10);
+    if (G.phase === 'countdown' || G.phase === 'measure' || G.phase === 'wait') {
       var db = readDb();
-      var lv = toLevel(db, G.phase === 'countdown' ? -50 : G.gate);
+      var lv = toLevel(db, G.phase === 'measure' ? G.gate : -50);
       G.disp += (lv - G.disp) * Math.min(1, dt * (lv > G.disp ? 18 : 5));
+      if (O.open && ts - lastLv > 100) { lastLv = ts; send({ t: 'lv', v: Math.round(G.disp) }); }
       var el = (ts - G.t0) / 1000;
-      if (G.phase === 'countdown') {
+      if (G.phase === 'wait') { /* 友だち待ち */ }
+      else if (G.phase === 'countdown') {
         G.noise.push(db);
         G.count = Math.max(1, Math.ceil(COUNT_SEC - el));
         if (el >= COUNT_SEC) beginMeasure(ts);
@@ -896,11 +1132,11 @@ ul{padding-left:1.3em;margin:4px 0}
     // 上のバー
     if (playing) {
       var topY = H * 0.055;
-      var lab = G.phase === 'countdown' ? '● マイク使用中　じゅんび中…' : '● マイク使用中　のこり ' + G.timeLeft.toFixed(1) + '秒';
+      var lab = G.phase === 'wait' ? '● マイク使用中　友だちを待っています…' : G.phase === 'countdown' ? '● マイク使用中　じゅんび中…' : '● マイク使用中　のこり ' + G.timeLeft.toFixed(1) + '秒';
       text(lab, W * 0.06, topY, Math.min(H * 0.055, W * 0.042), '#ff8a8e', 'left');
       var bx = W * 0.06, bw = W * 0.88, by = H * 0.105, bh = Math.max(5, H * 0.02);
       cx.fillStyle = 'rgba(255,255,255,.15)'; cx.fillRect(bx, by, bw, bh);
-      var prog = G.phase === 'countdown' ? 0 : 1 - G.timeLeft / MEASURE_SEC;
+      var prog = G.phase !== 'measure' ? 0 : 1 - G.timeLeft / MEASURE_SEC;
       cx.fillStyle = '#ff5fa2'; cx.fillRect(bx, by, bw * prog, bh);
     } else if (G.hint) {
       text(G.hint, W / 2, H * 0.07, Math.min(H * 0.06, W * 0.05), '#e7defe', 'center');
@@ -913,6 +1149,7 @@ ul{padding-left:1.3em;margin:4px 0}
       var key = list[i][0], o = sc[key], isActive = sc.active === key;
       var mouth, bob = Math.sin(t * 3 + i * 1.7) * r * 0.04, sz = 1;
       if (playing && isActive) { mouth = G.disp / 100; sz = 1 + mouth * 0.12; }
+      else if (S.mode === 'online' && !isActive && !result) mouth = Math.max(0.04, G.oppDisp / 100);
       else if (result) mouth = G.moods[key] === 'happy' ? 0.35 : 0;
       else mouth = 0.04 + 0.03 * Math.sin(t * 2 + i);
       cx.save(); cx.translate(list[i][1], cy + bob); cx.scale(sz, sz);
@@ -982,6 +1219,11 @@ ul{padding-left:1.3em;margin:4px 0}
   resize();
   renderMenu();
   requestAnimationFrame(frame);
+  if (location.hash.indexOf('#join=') === 0) {   // 招待リンクから開いた場合
+    var inv = location.hash.slice(6);
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+    chooseMode('online'); showOnline('o-guest'); $('guestOffer').value = inv; onlineJoin(inv);
+  }
 })();
 </script>
 </body>
